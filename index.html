@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Number Go Up</title>
+    <title>Number Go Up (BigNum Edition)</title>
+    <script src="https://cdn.jsdelivr.net/gh/Patashu/break_infinity.js/break_infinity.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,44 +39,47 @@
     </div>
 
     <script>
-        let number = 0;
-        let speed = 1; // Base speed
+        let number = new Decimal(0);
+        let speed = new Decimal(1);
         let increaseRate = 1000; // 1 second interval
 
-        // Abbreviations for large numbers
-        const abbreviations = ["K", "M", "B", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No", "De"];
+        // Extended number abbreviations
+        const abbreviations = [
+            "K", "M", "B", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No", "De",
+            "Vt", "Tg", "qg", "Qg", "sg", "Sg", "Og", "Ng", "Ce",
+        ];
 
         function formatNumber(num) {
-            if (num < 1000) return num.toString(); // No abbreviation needed
+            if (num.lessThan(1000)) return num.toString(); // No abbreviation needed
 
-            let tier = Math.floor(Math.log10(num) / 3); // Determines which abbreviation to use
-            if (tier - 1 >= abbreviations.length) return num.toExponential(2); // Use scientific notation if too large
+            let tier = Math.floor(num.log10() / 3);
+            if (tier - 1 >= abbreviations.length) return num.toExponential(2); // Switch to scientific notation if too large
 
-            let scaled = num / Math.pow(10, tier * 3);
-            return scaled.toFixed(2) + abbreviations[tier - 1]; // Append the correct abbreviation
+            let scaled = num.div(Decimal.pow(10, tier * 3));
+            return scaled.toFixed(2) + abbreviations[tier - 1]; // Append correct abbreviation
         }
 
         function updateNumber() {
-            number += speed;
+            number = number.plus(speed);
             document.getElementById("number").innerText = formatNumber(number);
 
             // Increase speed every time number reaches 16, 32, 64, etc.
-            if ((number & (number - 1)) === 0 && number >= 16) { 
-                speed *= 1.2;
+            if (number.greaterThanOrEqualTo(16) && number.log2().floor().eq(number.log2())) { 
+                speed = speed.times(1.2);
             }
 
             // Update the info panel
-            document.getElementById("double").innerText = `2 × number = ${formatNumber(number * 2)}`;
-            document.getElementById("power").innerText = `2 ^ number = ${formatNumber(Math.pow(2, number))}`;
-            document.getElementById("log").innerText = `log₂(number) = ${number > 0 ? Math.log2(number).toFixed(2) : 0}`;
+            document.getElementById("double").innerText = `2 × number = ${formatNumber(number.times(2))}`;
+            document.getElementById("power").innerText = `2 ^ number = ${formatNumber(Decimal.pow(2, number))}`;
+            document.getElementById("log").innerText = `log₂(number) = ${number.greaterThan(0) ? number.log2().toFixed(2) : 0}`;
         }
 
         function speedUp() {
-            speed *= 10; // Clicking "Speed Up!" doubles the speed
+            speed = speed.times(2); // Clicking "Speed Up!" doubles the speed
         }
 
         function superSpeedUp() {
-            speed *= 170; // Clicking "Super Speed Up!" quadruples the speed
+            speed = speed.times(4); // Clicking "Super Speed Up!" quadruples the speed
         }
 
         setInterval(updateNumber, increaseRate);
