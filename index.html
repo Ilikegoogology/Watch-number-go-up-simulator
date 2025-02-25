@@ -29,7 +29,7 @@
     <script>
         let number = 0;
         let speed = 1; // Base speed
-        let increaseRate = 1000; // 1 second interval
+        let increaseRate = 100; // 1 second interval
 
         // Abbreviations for large numbers
         const abbreviations = ["K", "M", "B", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No", "De","UDe","DDe","TDe","QdDe","QnDe","SxDe","SpDe","OcDe","NoDe","Vt","UVt","DVt","TVt","QdVt","QnVt","SxVt","SpVt","OcVt","NoVt","Tg"];
@@ -50,12 +50,12 @@
 
             // Increase speed every time number reaches 16, 32, 64, 128, etc.
             if ((number & (number - 1)) === 0 && number >= 16) { 
-                speed *= 1.2;
+                speed *= 10;
             }
         }
 
         function speedUp() {
-            speed *= 2; // Clicking the button doubles the speed
+            speed *= 10; // Clicking the button doubles the speed
         }
 
         setInterval(updateNumber, increaseRate);
