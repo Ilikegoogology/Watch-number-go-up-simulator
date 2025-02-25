@@ -16,8 +16,12 @@
         button {
             font-size: 20px;
             padding: 10px;
-            margin-top: 20px;
+            margin: 10px;
             cursor: pointer;
+        }
+        .info {
+            margin-top: 20px;
+            font-size: 18px;
         }
     </style>
 </head>
@@ -25,14 +29,21 @@
 
     <h1 id="number">0</h1>
     <button onclick="speedUp()">Speed Up!</button>
+    <button onclick="superSpeedUp()">Super Speed Up!</button>
+
+    <div class="info">
+        <p id="double">2 × number = 0</p>
+        <p id="power">2 ^ number = 1</p>
+        <p id="log">log₂(number) = 0</p>
+    </div>
 
     <script>
         let number = 0;
         let speed = 1; // Base speed
-        let increaseRate = 100; // 1 second interval
+        let increaseRate = 1000; // 1 second interval
 
         // Abbreviations for large numbers
-        const abbreviations = ["K", "M", "B", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No", "De","UDe","DDe","TDe","QdDe","QnDe","SxDe","SpDe","OcDe","NoDe","Vt","UVt","DVt","TVt","QdVt","QnVt","SxVt","SpVt","OcVt","NoVt","Tg"];
+        const abbreviations = ["K", "M", "B", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No", "De"];
 
         function formatNumber(num) {
             if (num < 1000) return num.toString(); // No abbreviation needed
@@ -48,14 +59,23 @@
             number += speed;
             document.getElementById("number").innerText = formatNumber(number);
 
-            // Increase speed every time number reaches 16, 32, 64, 128, etc.
+            // Increase speed every time number reaches 16, 32, 64, etc.
             if ((number & (number - 1)) === 0 && number >= 16) { 
-                speed *= 10;
+                speed *= 1.2;
             }
+
+            // Update the info panel
+            document.getElementById("double").innerText = `2 × number = ${formatNumber(number * 2)}`;
+            document.getElementById("power").innerText = `2 ^ number = ${formatNumber(Math.pow(2, number))}`;
+            document.getElementById("log").innerText = `log₂(number) = ${number > 0 ? Math.log2(number).toFixed(2) : 0}`;
         }
 
         function speedUp() {
-            speed *= 10; // Clicking the button doubles the speed
+            speed *= 10; // Clicking "Speed Up!" doubles the speed
+        }
+
+        function superSpeedUp() {
+            speed *= 170; // Clicking "Super Speed Up!" quadruples the speed
         }
 
         setInterval(updateNumber, increaseRate);
