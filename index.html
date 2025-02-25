@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Goes Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #number {
+            font-size: 48px;
+            margin: 20px;
+        }
+        button {
+            font-size: 20px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Watch the Number Go Up!</h1>
+    <div id="number">0</div>
+    <button onclick="boostNumber()">Speed Up!</button>
+    
+    <script>
+        let number = 0;
+        let speed = 1000;
+        
+        function updateNumber() {
+            number++;
+            document.getElementById("number").textContent = number;
+        }
+        
+        function boostNumber() {
+            speed = Math.max(100, speed * 0.9);
+            clearInterval(interval);
+            interval = setInterval(updateNumber, speed);
+        }
+        
+        let interval = setInterval(updateNumber, speed);
+    </script>
+</body>
+</html>
