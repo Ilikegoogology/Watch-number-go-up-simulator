@@ -3,44 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Number Goes Up</title>
+    <title>Number Go Up</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
         }
-        #number {
+        h1 {
             font-size: 48px;
-            margin: 20px;
         }
         button {
             font-size: 20px;
             padding: 10px;
+            margin-top: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>Watch the Number Go Up!</h1>
-    <div id="number">0</div>
-    <button onclick="boostNumber()">Speed Up!</button>
-    
+
+    <h1 id="number">0</h1>
+    <button onclick="speedUp()">Speed Up!</button>
+
     <script>
         let number = 0;
-        let speed = 1000;
-        
+        let speed = 1; // Base speed
+        let increaseRate = 1000; // 1 second interval
+
         function updateNumber() {
-            number++;
-            document.getElementById("number").textContent = number;
+            number += speed;
+            document.getElementById("number").innerText = number;
+
+            // Increase speed every time number hits a power of 16 (16, 32, 64, etc.)
+            if (number >= 16 && (number & (number - 1)) === 0) { 
+                speed *= 1.2;
+            }
         }
-        
-        function boostNumber() {
-            speed = Math.max(1000, speed * 0.6);
-            clearInterval(interval);
-            interval = setInterval(updateNumber, speed);
+
+        function speedUp() {
+            speed *= 2; // Clicking the button doubles the speed
         }
-        
-        let interval = setInterval(updateNumber, speed);
+
+        setInterval(updateNumber, increaseRate);
     </script>
+
 </body>
 </html>
