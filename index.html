@@ -41,45 +41,47 @@
     <script>
         let number = new Decimal(0);
         let speed = new Decimal(1);
-        let increaseRate = 1000; // 1 second interval
+        let increaseRate = 1000; // Update interval in ms
+        let lastPowerOfTwo = Decimal(0);
 
-        // Extended number abbreviations
         const abbreviations = [
             "K", "M", "B", "T", "Qd", "Qn", "Sx", "Sp", "Oc", "No", "De",
-            "Vt", "Tg", "qg", "Qg", "sg", "Sg", "Og", "Ng", "Ce",
+            "Vt", "Tg", "qg", "Qg", "sg", "Sg", "Og", "Ng", "Ce"
         ];
 
         function formatNumber(num) {
-            if (num.lessThan(1000)) return num.toString(); // No abbreviation needed
+            if (num.lessThan(1000)) return num.toFixed(2);
 
             let tier = Math.floor(num.log10() / 3);
-            if (tier - 1 >= abbreviations.length) return num.toExponential(2); // Switch to scientific notation if too large
+            if (tier - 1 >= abbreviations.length) return num.toExponential(2);
 
             let scaled = num.div(Decimal.pow(10, tier * 3));
-            return scaled.toFixed(2) + abbreviations[tier - 1]; // Append correct abbreviation
+            return scaled.toFixed(2) + abbreviations[tier - 1];
         }
 
         function updateNumber() {
             number = number.plus(speed);
             document.getElementById("number").innerText = formatNumber(number);
 
-            // Increase speed every time number reaches 16, 32, 64, etc.
-            if (number.greaterThanOrEqualTo(16) && number.log2().floor().eq(number.log2())) { 
+            // Only scale speed on exact powers of 2 (prevent repeated scaling)
+            let log2 = number.log(2);
+            if (number.greaterThanOrEqualTo(16) && log2.floor().equals(log2) && !log2.equals(lastPowerOfTwo)) {
                 speed = speed.times(1.2);
+                lastPowerOfTwo = log2.floor();
             }
 
-            // Update the info panel
+            // Update info display
             document.getElementById("double").innerText = `2 × number = ${formatNumber(number.times(2))}`;
             document.getElementById("power").innerText = `2 ^ number = ${formatNumber(Decimal.pow(2, number))}`;
-            document.getElementById("log").innerText = `log₂(number) = ${number.greaterThan(0) ? number.log2().toFixed(2) : 0}`;
+            document.getElementById("log").innerText = `log₂(number) = ${number.gt(0) ? number.log(2).toFixed(2) : 0}`;
         }
 
         function speedUp() {
-            speed = speed.times(2); // Clicking "Speed Up!" doubles the speed
+            speed = speed.times(2);
         }
 
         function superSpeedUp() {
-            speed = speed.times(4); // Clicking "Super Speed Up!" quadruples the speed
+            speed = speed.times(4);
         }
 
         setInterval(updateNumber, increaseRate);
